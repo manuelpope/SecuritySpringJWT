@@ -1,0 +1,2 @@
+# SecuritySpringJWT
+base security template
