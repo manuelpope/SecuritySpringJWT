@@ -27,8 +27,9 @@ public class JwtFilterRequest extends OncePerRequestFilter {
 
     public static Predicate<String> VALID_TOKEN_FORMAT = authorizationHeader1 -> authorizationHeader1 != null && authorizationHeader1.startsWith("Bearer");
     public static Function<String, String> VALID_JWT = s -> Optional.ofNullable(s).filter(VALID_TOKEN_FORMAT).map(r -> r.substring(7)).orElse("undefined");
-    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization"))
-            .map(r -> VALID_JWT.apply(r)).orElse("undefined");
+    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization")).map(r -> VALID_JWT.apply(r)).orElse("undefined");
+
+
     @Autowired
     private JWTUtil jwtUtil;
     @Autowired
