@@ -3,7 +3,6 @@ package com.templatesecurity.templatesecurity.websecurityjwt.service;
 import com.templatesecurity.templatesecurity.websecurityjwt.Repo.UserRepository;
 import com.templatesecurity.templatesecurity.websecurityjwt.Repo.model.DAOUser;
 import com.templatesecurity.templatesecurity.websecurityjwt.dto.UserDTO;
-import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

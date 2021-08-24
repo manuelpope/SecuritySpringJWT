@@ -2,8 +2,6 @@ package com.templatesecurity.templatesecurity.websecurityjwt.security.filter;
 
 import com.templatesecurity.templatesecurity.websecurityjwt.service.DetailUserService;
 import com.templatesecurity.templatesecurity.websecurityjwt.service.JWTUtil;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,19 +25,14 @@ import java.util.function.Predicate;
 public class JwtFilterRequest extends OncePerRequestFilter {
 
 
+    public static Predicate<String> VALID_TOKEN_FORMAT = authorizationHeader1 -> authorizationHeader1 != null && authorizationHeader1.startsWith("Bearer");
+    public static Function<String, String> VALID_JWT = s -> Optional.ofNullable(s).filter(VALID_TOKEN_FORMAT).map(r -> r.substring(7)).orElse("undefined");
+    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization"))
+            .map(r -> VALID_JWT.apply(r)).orElse("undefined");
     @Autowired
     private JWTUtil jwtUtil;
-
     @Autowired
     private DetailUserService detailUserService;
-
-    public static Predicate<String> VALID_TOKEN_FORMAT = authorizationHeader1 -> authorizationHeader1 != null && authorizationHeader1.startsWith("Bearer");
-    public static Function<String,String> VALID_JWT = s-> Optional.ofNullable(s).filter(VALID_TOKEN_FORMAT).map(r->r.substring(7)).orElse("undefined");
-    public static Function<HttpServletRequest,String> EXTRACT_JWT_FROM_REQUEST = s->Optional.ofNullable(s.getHeader("Authorization"))
-            .map(r->VALID_JWT.apply(r)).orElse("undefined");
-
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
