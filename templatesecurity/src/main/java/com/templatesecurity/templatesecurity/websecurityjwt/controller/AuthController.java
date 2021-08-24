@@ -1,9 +1,9 @@
 package com.templatesecurity.templatesecurity.websecurityjwt.controller;
 
 
-import com.templatesecurity.templatesecurity.websecurityjwt.dto.AuthenticationRequest;
-import com.templatesecurity.templatesecurity.websecurityjwt.dto.AuthenticationResponse;
-import com.templatesecurity.templatesecurity.websecurityjwt.dto.UserDTO;
+import com.templatesecurity.templatesecurity.websecurityjwt.controller.dto.AuthenticationRequest;
+import com.templatesecurity.templatesecurity.websecurityjwt.controller.dto.AuthenticationResponse;
+import com.templatesecurity.templatesecurity.websecurityjwt.controller.dto.UserDTO;
 import com.templatesecurity.templatesecurity.websecurityjwt.service.DetailUserService;
 import com.templatesecurity.templatesecurity.websecurityjwt.service.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,9 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Auth controller.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -35,6 +38,12 @@ public class AuthController {
     @Autowired
     private JWTUtil jwtUtil;
 
+    /**
+     * Create token response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<Map> createToken(@Valid @RequestBody AuthenticationRequest request) {
         try {
@@ -57,6 +66,13 @@ public class AuthController {
     }
 
 
+    /**
+     * Save user response entity.
+     *
+     * @param user the user
+     * @return the response entity
+     * @throws Exception the exception
+     */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@Valid @RequestBody UserDTO user) throws Exception {
         try {
@@ -68,6 +84,12 @@ public class AuthController {
 
     }
 
+    /**
+     * Handle validation exceptions map.
+     *
+     * @param ex the ex
+     * @return the map
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -83,6 +105,12 @@ public class AuthController {
         return errors;
     }
 
+    /**
+     * Handle internal exceptions map.
+     *
+     * @param ex the ex
+     * @return the map
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
     public Map<String, String> handleInternalExceptions(Exception ex) {
@@ -91,6 +119,13 @@ public class AuthController {
         return errors;
     }
 
+    /**
+     * Refresh token response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     * @throws Exception the exception
+     */
     @RequestMapping(value = "/refreshtoken", method = RequestMethod.POST)
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws Exception {
         String authorizationHeader = request.getHeader("Authorization");
@@ -106,6 +141,13 @@ public class AuthController {
         return new ResponseEntity<>("No a valid Token", HttpStatus.FORBIDDEN);
     }
 
+    /**
+     * Logout response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     * @throws Exception the exception
+     */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ResponseEntity<?> logout(HttpServletRequest request) throws Exception {
         String authorizationHeader = request.getHeader("Authorization");

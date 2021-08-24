@@ -8,11 +8,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * The type Controller welcome.
+ */
 @RestController
 public class ControllerWelcome {
     @Autowired
     private JWTUtil jwtUtil;
 
+    /**
+     * Hola string.
+     *
+     * @return the string
+     */
     @GetMapping("/hola")
     @ResponseBody
     public String hola() {
@@ -21,6 +29,12 @@ public class ControllerWelcome {
 
     }
 
+    /**
+     * Holafresh string.
+     *
+     * @param request the request
+     * @return the string
+     */
     @GetMapping("/holafresh")
     @ResponseBody
     public String holafresh(HttpServletRequest request) {

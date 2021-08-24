@@ -7,6 +7,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * The type Dao user.
+ */
 @Entity
 @Table(name = "USER_SE")
 @ToString

@@ -1,4 +1,4 @@
-package com.templatesecurity.templatesecurity.websecurityjwt.dto;
+package com.templatesecurity.templatesecurity.websecurityjwt.controller.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -6,6 +6,9 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * The type User dto.
+ */
 @Data
 @AllArgsConstructor
 public class UserDTO {

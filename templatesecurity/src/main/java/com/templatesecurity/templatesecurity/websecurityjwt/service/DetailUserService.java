@@ -2,7 +2,7 @@ package com.templatesecurity.templatesecurity.websecurityjwt.service;
 
 import com.templatesecurity.templatesecurity.websecurityjwt.Repo.UserRepository;
 import com.templatesecurity.templatesecurity.websecurityjwt.Repo.model.DAOUser;
-import com.templatesecurity.templatesecurity.websecurityjwt.dto.UserDTO;
+import com.templatesecurity.templatesecurity.websecurityjwt.controller.dto.UserDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * The type Detail user service.
+ */
 @Service
 public class DetailUserService implements UserDetailsService {
 
@@ -45,6 +48,13 @@ public class DetailUserService implements UserDetailsService {
         throw new UsernameNotFoundException("not valid username ");
     }
 
+    /**
+     * Save dao user.
+     *
+     * @param user the user
+     * @return the dao user
+     * @throws Exception the exception
+     */
     public DAOUser save(UserDTO user) throws Exception {
 
         DAOUser newUser = new DAOUser();

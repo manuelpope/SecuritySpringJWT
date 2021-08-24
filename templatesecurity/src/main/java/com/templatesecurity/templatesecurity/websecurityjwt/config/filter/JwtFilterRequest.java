@@ -1,4 +1,4 @@
-package com.templatesecurity.templatesecurity.websecurityjwt.security.filter;
+package com.templatesecurity.templatesecurity.websecurityjwt.config.filter;
 
 import com.templatesecurity.templatesecurity.websecurityjwt.service.DetailUserService;
 import com.templatesecurity.templatesecurity.websecurityjwt.service.JWTUtil;
@@ -20,14 +20,26 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * The type Jwt filter request.
+ */
 @Component
 @Setter
 public class JwtFilterRequest extends OncePerRequestFilter {
 
 
+    /**
+     * The Valid token format.
+     */
     public static Predicate<String> VALID_TOKEN_FORMAT = authorizationHeader1 -> authorizationHeader1 != null && authorizationHeader1.startsWith("Bearer");
+    /**
+     * The Valid jwt.
+     */
     public static Function<String, String> VALID_JWT = s -> Optional.ofNullable(s).filter(VALID_TOKEN_FORMAT).map(r -> r.substring(7)).orElse("undefined");
-    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization")).map(r -> VALID_JWT.apply(r)).orElse("undefined");
+    /**
+     * The Extract jwt from request.
+     */
+    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization")).map(r -> VALID_JWT.apply(r)).orElse(null);
 
 
     @Autowired
