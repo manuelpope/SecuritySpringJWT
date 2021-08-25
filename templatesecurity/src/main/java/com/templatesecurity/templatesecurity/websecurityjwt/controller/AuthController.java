@@ -22,6 +22,8 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.templatesecurity.templatesecurity.websecurityjwt.service.MapperFunctions.EXTRACT_JWT_FROM_REQUEST;
+
 /**
  * The type Auth controller.
  */
@@ -50,13 +52,16 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             UserDetails userDetails = detailUserService.loadUserByUsername(request.getUsername());
             String jwt = jwtUtil.generateToken(userDetails);
+            String refreshToken = jwtUtil.doGenerateRefreshToken(userDetails, jwt);
             Map<String, Object> response = new HashMap<>();
             response.put("token", new AuthenticationResponse(jwt));
             response.put("userName", request.getUsername());
             response.put("role", userDetails.getAuthorities());
+            response.put("refresh_token", refreshToken);
 
 
             return new ResponseEntity<>(response, HttpStatus.OK);
+
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("error", e.getMessage());
@@ -128,17 +133,16 @@ public class AuthController {
      */
     @RequestMapping(value = "/refreshtoken", method = RequestMethod.POST)
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws Exception {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
-            String jwt = authorizationHeader.substring(7);
-            String username = jwtUtil.extractUsername(jwt);
-            UserDetails userDetails = detailUserService.loadUserByUsername(username);
+
+        String jwt = EXTRACT_JWT_FROM_REQUEST.apply(request);
+        String username = jwtUtil.extractUsername(jwt);
+        UserDetails userDetails = detailUserService.loadUserByUsername(username);
+        String refreshToken = jwtUtil.doGenerateRefreshToken(userDetails, jwt);
+        Map<String, Object> response = Map.of("refresh_token", refreshToken);
+
+        return ResponseEntity.ok(response);
 
 
-            return ResponseEntity.ok(jwtUtil.doGenerateRefreshToken(userDetails, jwt));
-        }
-
-        return new ResponseEntity<>("No a valid Token", HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -149,17 +153,15 @@ public class AuthController {
      * @throws Exception the exception
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public ResponseEntity<?> logout(HttpServletRequest request) throws Exception {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
-            String jwt = authorizationHeader.substring(7);
-            jwtUtil.addBackListJWT(jwt);
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+
+        String jwt = EXTRACT_JWT_FROM_REQUEST.apply(request);
+        jwtUtil.addBackListJWT(jwt);
 
 
-            return ResponseEntity.ok("successful logged out");
-        }
+        return ResponseEntity.ok("successful logged out");
 
-        return new ResponseEntity<>("No a valid Token", HttpStatus.BAD_REQUEST);
+
     }
 
 

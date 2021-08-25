@@ -16,9 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * The type Jwt filter request.
@@ -26,20 +23,6 @@ import java.util.function.Predicate;
 @Component
 @Setter
 public class JwtFilterRequest extends OncePerRequestFilter {
-
-
-    /**
-     * The Valid token format.
-     */
-    public static Predicate<String> VALID_TOKEN_FORMAT = authorizationHeader1 -> authorizationHeader1 != null && authorizationHeader1.startsWith("Bearer");
-    /**
-     * The Valid jwt.
-     */
-    public static Function<String, String> VALID_JWT = s -> Optional.ofNullable(s).filter(VALID_TOKEN_FORMAT).map(r -> r.substring(7)).orElse("undefined");
-    /**
-     * The Extract jwt from request.
-     */
-    public static Function<HttpServletRequest, String> EXTRACT_JWT_FROM_REQUEST = s -> Optional.ofNullable(s.getHeader("Authorization")).map(r -> VALID_JWT.apply(r)).orElse(null);
 
 
     @Autowired

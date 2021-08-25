@@ -3,14 +3,16 @@ package com.templatesecurity.templatesecurity.websecurityjwt.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
-import static com.templatesecurity.templatesecurity.websecurityjwt.config.filter.JwtFilterRequest.EXTRACT_JWT_FROM_REQUEST;
+import static com.templatesecurity.templatesecurity.websecurityjwt.service.MapperFunctions.*;
 
 
 /**
@@ -18,13 +20,18 @@ import static com.templatesecurity.templatesecurity.websecurityjwt.config.filter
  */
 @Component
 public class JWTUtil {
-    private static final String KEY = "pl4tz1";
+
+    @Value("${jwt.secret}")
+    private String KEY;
     /**
      * The constant BACK_lIST.
      */
     protected static ArrayList<String> BACK_lIST = new ArrayList<>();
-    private long refreshExpirationDateInMs = 3600 * 1000 * 7;
-    private long tokenExpirationDateInMs = 3600 * 1000;
+    @Value("${jwt.expirationDateInMs}")
+    private long refreshExpirationDateInMs;
+    @Value("${jwt.refreshExpirationDateInMs}")
+    private long tokenExpirationDateInMs;
+
 
     /**
      * Generate token string.
@@ -34,8 +41,9 @@ public class JWTUtil {
      */
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder().setSubject(userDetails.getUsername()).setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpirationDateInMs))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpirationDateInMs)).setAudience("-fresh")
                 .signWith(SignatureAlgorithm.HS256, KEY).compact();
+
     }
 
     /**
@@ -91,7 +99,7 @@ public class JWTUtil {
      * @return the claims
      */
     public Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(KEY).parseClaimsJws(token).getBody();
+        return CLAIMS_EXTRACT_FUNCTION.apply(token, KEY);
     }
 
     /**
@@ -121,8 +129,16 @@ public class JWTUtil {
      * @return the boolean
      */
     public boolean isFresh(HttpServletRequest request) {
-        String jwt = EXTRACT_JWT_FROM_REQUEST.apply(request);
-        return !getClaims(jwt).getAudience().endsWith("-refresh");
+        String jwt = Optional.ofNullable(request)
+                .map(EXTRACT_JWT_FROM_REQUEST)
+                .orElseThrow(() -> new IllegalArgumentException("Not valid request"));
+
+        String audience = Optional.of(jwt)
+                .map(t -> CLAIMS_EXTRACT_FUNCTION.apply(t, KEY))
+                .map(Claims::getAudience)
+                .orElseThrow(() -> new IllegalArgumentException("Not valid token"));
+
+        return IS_REFRESH_TOKEN.test(audience);
 
 
     }
