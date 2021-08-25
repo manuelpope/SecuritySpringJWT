@@ -47,5 +47,15 @@ public class ControllerWelcome {
         return "Not a fresh token to have full access must log in again";
     }
 
+    @GetMapping("/public/hello")
+    @ResponseBody
+    public String holaPlubic() {
+
+
+        return "public get method called";
+
+
+    }
+
 
 }
