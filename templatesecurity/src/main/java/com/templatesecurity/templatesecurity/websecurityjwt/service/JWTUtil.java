@@ -21,12 +21,12 @@ import static com.templatesecurity.templatesecurity.websecurityjwt.service.Mappe
 @Component
 public class JWTUtil {
 
-    @Value("${jwt.secret}")
-    private String KEY;
     /**
      * The constant BACK_lIST.
      */
     protected static ArrayList<String> BACK_lIST = new ArrayList<>();
+    @Value("${jwt.secret}")
+    private String KEY;
     @Value("${jwt.expirationDateInMs}")
     private long refreshExpirationDateInMs;
     @Value("${jwt.refreshExpirationDateInMs}")
