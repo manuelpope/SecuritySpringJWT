@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
+//@EntityScan("${entity.package}")
 public class TemplatesecurityApplication {
 
 
