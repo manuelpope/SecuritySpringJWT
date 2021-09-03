@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-//@EntityScan("${entity.package}")
+//@EntityScan("${entity.package}") uncomment this line for select entity scan dir
 public class TemplatesecurityApplication {
 
 
